@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>श्री प्रगति गणेश युवक मंडल - महा रजिस्टर</title>
+    <title>श्री प्रगति गणेश युवक मंडल - महा रजिस्टर (2999)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- FontAwesome -->
@@ -14,18 +14,20 @@
     <!-- Header Section -->
     <header class="bg-orange-600 text-white text-center py-5 shadow-md sticky top-0 z-10">
         <h1 class="text-2xl md:text-3xl font-bold tracking-wide">🙏 श्री प्रगति गणेश युवक मंडल 🙏</h1>
-        <p class="text-orange-200 text-sm mt-1">महा डिजिटल बही (वर्ष 2999 एवं 10,000+ सदस्य क्षमता)</p>
+        <p class="text-orange-200 text-sm mt-1">असीमित वर्ष (2999 तक) एवं 10,000+ सदस्य महा डिजिटल बही</p>
     </header>
 
     <div class="max-w-4xl mx-auto p-4">
         
         <!-- Year Selector Input Dashboard -->
         <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-l-4 border-orange-500">
-            <div class="w-full sm:w-auto">
-                <label class="text-xs font-bold text-gray-500 uppercase block mb-1">उत्सव का वर्ष लिखें (जैसे: 2026 या 2999)</label>
-                <div class="flex gap-2">
-                    <input type="number" id="year-input" value="2026" min="2025" max="2999" class="w-32 bg-orange-50 border border-orange-300 text-orange-700 font-bold py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-lg">
-                    <button onclick="changeYear()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-4 py-2 rounded-lg text-sm cursor-pointer transition">बदलें</button>
+            <div class="flex items-center gap-3">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase block mb-1">उत्सव का वर्ष लिखें (जैसे: 2026 या 2999)</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="year-input" value="2026" min="2025" max="2999" class="w-32 bg-orange-50 border border-orange-300 text-orange-700 font-bold py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-lg">
+                        <button onclick="changeYear()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-4 py-2 rounded-lg text-sm cursor-pointer transition">बदलें</button>
+                    </div>
                 </div>
             </div>
             <div class="text-center sm:text-right">
@@ -38,7 +40,7 @@
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
             <div class="bg-white p-3 rounded-xl shadow-sm border-b-4 border-orange-500 text-center">
                 <p class="text-[10px] text-gray-500 font-semibold uppercase">कुल सदस्य</p>
-                <p class="text-lg font-bold text-gray-800" id="total-members-count">5</p>
+                <p class="text-lg font-bold text-gray-800" id="total-members-count">0</p>
             </div>
             <div class="bg-white p-3 rounded-xl shadow-sm border-b-4 border-green-500 text-center">
                 <p class="text-[10px] text-gray-500 font-semibold uppercase">जमा वाले</p>
@@ -55,17 +57,6 @@
             <div class="bg-white p-3 rounded-xl shadow-sm border-b-4 border-purple-500 text-center col-span-2 md:col-span-1">
                 <p class="text-[10px] text-gray-500 font-semibold uppercase">बचे पैसे (कैश)</p>
                 <p class="text-lg font-bold text-purple-600" id="net-balance">₹0</p>
-            </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="bg-white p-4 rounded-xl shadow-sm mb-6">
-            <div class="flex justify-between text-sm font-semibold mb-2">
-                <span>इस साल की कलेक्शन प्रोग्रेस</span>
-                <span id="progress-percent">0%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                <div id="progress-bar" class="bg-green-500 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
             </div>
         </div>
 
@@ -86,26 +77,26 @@
         <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
             <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between font-semibold text-sm text-gray-600">
                 <span>सदस्य सूची (ID और नाम)</span>
-                <span>स्टेटस / चंदा रकम</span>
+                <span>स्टेटस / जमा रकम</span>
             </div>
-            <div id="members-list" class="divide-y divide-gray-100 max-h-[350px] overflow-y-auto">
-                <!-- लिस्ट यहाँ लोड होगी -->
+            <div id="members-list" class="divide-y divide-gray-100 max-h-[400px] overflow-y-auto">
+                <!-- चंदा लिस्ट यहाँ लोड होगी -->
             </div>
         </div>
 
         <!-- Expense Tracker Section -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6 border border-red-100">
             <div class="p-4 bg-red-50 border-b border-red-100 flex justify-between items-center">
-                <h3 class="font-bold text-red-800"><i class="fa-solid fa-wallet mr-1"></i> छोटे-mote खर्चों का हिसाब</h3>
+                <h3 class="font-bold text-red-800"><i class="fa-solid fa-wallet mr-1"></i> छोटे-मोटे खर्चों का हिसाब</h3>
                 <button onclick="addExpense()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold shadow-sm transition cursor-pointer">
                     <i class="fa-solid fa-plus mr-1"></i> नया खर्च जोड़ें
                 </button>
             </div>
             <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between font-semibold text-xs text-gray-500">
-                <span>खर्च का विवरण (किस काम में खर्च हुआ)</span>
+                <span>खर्च का विवरण</span>
                 <span>रकम (रुपये)</span>
             </div>
-            <div id="expenses-list" class="divide-y divide-gray-100 max-h-[180px] overflow-y-auto">
+            <div id="expenses-list" class="divide-y divide-gray-100 max-h-[200px] overflow-y-auto">
                 <!-- खर्चों की लिस्ट यहाँ लोड होगी -->
             </div>
         </div>
@@ -118,7 +109,7 @@
                     <i class="fa-solid fa-user-plus mr-1"></i> नया सदस्य जोड़ें (+ Add Member)
                 </button>
                 <button onclick="editMemberName()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-4 py-2 rounded-lg font-medium shadow-sm transition cursor-pointer">
-                    <i class="fa-solid fa-user-pen mr-1"></i> सदस्य का नाम सुधारें
+                    <i class="fa-solid fa-user-pen mr-1"></i> किसी सदस्य का नाम सुधारें
                 </button>
                 <button onclick="exportData()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-4 py-2 rounded-lg font-medium shadow-sm transition cursor-pointer">
                     <i class="fa-solid fa-download mr-1"></i> हिसाब बैकअप डाउनलोड करें
@@ -128,7 +119,7 @@
                 </button>
                 <input type="file" id="import-file" onchange="importData(event)" class="hidden" accept=".json">
             </div>
-            <p class="text-[11px] text-amber-700 font-medium">📌 नोट: बदलाव करने के बाद "बैकअप डाउनलोड करें" बटन दबाकर फाइल सुरक्षित रखें!</p>
+            <p class="text-[11px] text-amber-700 font-medium">📌 टिप: आप 10,000 तक सदस्य जोड़ सकते हैं। डेटा सुरक्षित रखने के लिए "हिसाब बैकअप डाउनलोड करें" बटन का उपयोग करें!</p>
         </div>
 
     </div>
@@ -136,7 +127,7 @@
     <script>
         const ADMIN_PASSWORD = "9680"; 
 
-        // मास्टर इन-मेमोरी डेटाबेस
+        // डायनामिक मास्टर डेटाबेस स्ट्रक्चर
         let mandalData = {
             memberNames: {
                 "m1": "निमेष हलपति",
@@ -152,35 +143,39 @@
         let currentFilter = 'all';
         let searchQuery = '';
 
-        // शुरुआत में करंट ईयर का डेटा ढांचा तैयार करना
-        mandalData.years[currentYear] = { collections: {}, expenses: [] };
-
-        // वर्ष बदलने का फंक्शन
+        // वर्ष बदलने पर
         function changeYear() {
             const yrInput = document.getElementById('year-input').value;
             if(yrInput >= 2025 && yrInput <= 2999) {
                 currentYear = yrInput.toString();
                 document.getElementById('display-year').innerText = currentYear;
                 
+                // अगर इस साल का खाता पहली बार खुल रहा है तो खाली ढांचा तैयार करना
                 if (!mandalData.years[currentYear]) {
                     mandalData.years[currentYear] = { collections: {}, expenses: [] };
                 }
                 
-                refreshAll();
+                updateDashboard();
+                renderList();
+                renderExpenses();
             } else {
-                alert("कृपया वर्ष 2025 से 2999 के बीच लिखें!");
+                alert("कृपया वर्ष 2025 से 2999 के बीच ही लिखें!");
             }
         }
 
-        // मास्टर रिफ्रेश (जोड़-घटाव और लिस्ट अपडेट)
-        function refreshAll() {
+        // सभी जोड़-घटाव (कैलकुलेशन)
+        function updateDashboard() {
+            if (!mandalData.years[currentYear]) {
+                mandalData.years[currentYear] = { collections: {}, expenses: [] };
+            }
+            
             const yearData = mandalData.years[currentYear];
             const totalMembers = Object.keys(mandalData.memberNames).length;
             
             let paidCount = 0;
             let totalAmt = 0;
 
-            // 1. चंदा जोड़ना
+            // चंदा जोड़ना
             Object.keys(mandalData.memberNames).forEach(id => {
                 const statusData = yearData.collections[id];
                 if (statusData && statusData.status === 'paid') {
@@ -189,33 +184,40 @@
                 }
             });
 
-            // 2. कुल खर्च जोड़ना
+            // खर्च जोड़ना
             let totalExp = 0;
-            if (yearData.expenses && Array.isArray(yearData.expenses)) {
+            if (Array.isArray(yearData.expenses)) {
                 yearData.expenses.forEach(e => {
                     totalExp += parseInt(e.amount || 0);
                 });
             }
 
-            // 3. हाथ में बचे पैसे (कैश)
+            // हाथ में बचे पैसे
             let netBal = totalAmt - totalExp;
             const percent = totalAmt > 0 ? Math.round((totalAmt / 100000) * 100) : 0;
 
-            // स्क्रीन पर डिब्बे अपडेट करना
             document.getElementById('total-members-count').innerText = totalMembers;
             document.getElementById('paid-count').innerText = paidCount;
+            document.getElementById('pending-count').innerText = totalMembers - paidCount; // Temporary update for pending filter text
             document.getElementById('total-collection').innerText = `₹${totalAmt.toLocaleString('en-IN')}`;
             document.getElementById('total-expenses').innerText = `₹${totalExp.toLocaleString('en-IN')}`;
             document.getElementById('net-balance').innerText = `₹${netBal.toLocaleString('en-IN')}`;
             document.getElementById('progress-percent').innerText = `${percent}%`;
             document.getElementById('progress-bar').style.width = `${percent > 100 ? 100 : percent}%`;
+        }
 
-            // चंदा लिस्ट दोबारा बनाना
+        // सदस्य सूची दिखाना
+        function renderList() {
             const listContainer = document.getElementById('members-list');
             listContainer.innerHTML = '';
+
+            const yearData = mandalData.years[currentYear];
             let filteredCount = 0;
 
-            const sortedIds = Object.keys(mandalData.memberNames).sort((a, b) => parseInt(a.replace('m', '')) - parseInt(b.replace('m', '')));
+            // सभी आईडी को सही न्यूमेरिकल ऑर्डर में सेट करना (m1, m2, m3...)
+            const sortedIds = Object.keys(mandalData.memberNames).sort((a, b) => {
+                return parseInt(a.replace('m', '')) - parseInt(b.replace('m', ''));
+            });
 
             sortedIds.forEach(id => {
                 const name = mandalData.memberNames[id];
@@ -252,10 +254,14 @@
             if (filteredCount === 0) {
                 listContainer.innerHTML = `<div class="p-6 text-center text-gray-400">कोई रिकॉर्ड नहीं मिला!</div>`;
             }
+        }
 
-            // खर्चों की लिस्ट दोबारा बनाना
+        // खर्चों की लिस्ट दिखाना
+        function renderExpenses() {
             const expContainer = document.getElementById('expenses-list');
             expContainer.innerHTML = '';
+
+            const yearData = mandalData.years[currentYear];
 
             if (!yearData.expenses || yearData.expenses.length === 0) {
                 expContainer.innerHTML = `<div class="p-6 text-center text-gray-400 text-sm">इस वर्ष कोई खर्च दर्ज नहीं है।</div>`;
@@ -263,6 +269,7 @@
             }
 
             const reversedExpenses = [...yearData.expenses].reverse();
+
             reversedExpenses.forEach((exp, index) => {
                 const actualIndex = yearData.expenses.length - 1 - index; 
                 const item = document.createElement('div');
@@ -278,6 +285,23 @@
             });
         }
 
+        // नया सदस्य खुद जोड़ने का डायनामिक फीचर (10,000 तक क्षमता)
+        function addNewMember() {
+            const pass = prompt("नया सदस्य जोड़ने के लिए एडमिन पासवर्ड डालें:");
+            if (pass === ADMIN_PASSWORD) {
+                const newName = prompt("नए सदस्य का नाम लिखें:");
+                if (newName && newName.trim() !== "") {
+                    const nextIdNum = Object.keys(mandalData.memberNames).length + 1;
+                    const newId = `m${nextIdNum}`;
+                    
+                    mandalData.memberNames[newId] = newName.trim();
+                    updateDashboard();
+                    renderList();
+                    alert(`सफलतापूर्वक सदस्य जोड़ा गया! ID: ${newId.toUpperCase()}`);
+                }
+            } else if (pass !== null) alert("गलत पासवर्ड!");
+        }
+
         // चंदा जमा करना
         function markAsPaid(id) {
             const pass = prompt(`${currentYear} के लिए पैसे जमा करने का पासवर्ड डालें:`);
@@ -288,7 +312,8 @@
                         status: 'paid',
                         amount: parseInt(customAmount)
                     };
-                    refreshAll();
+                    updateDashboard();
+                    renderList();
                 } else if (customAmount !== null) {
                     alert("कृपया सही संख्या डालें!");
                 }
@@ -299,7 +324,7 @@
         function addExpense() {
             const pass = prompt(`${currentYear} में नया खर्च जोड़ने का पासवर्ड डालें:`);
             if (pass === ADMIN_PASSWORD) {
-                const title = prompt("खर्च का विवरण (जैसे: प्रसाद, जनरेटर, टेंट):");
+                const title = prompt("खर्च का विवरण लिखें:");
                 if (!title || title.trim() === "") return;
 
                 const amount = prompt(`"${title}" में कितने रुपये खर्च हुए? (सिर्फ संख्या):`);
@@ -308,7 +333,8 @@
                         title: title.trim(),
                         amount: parseInt(amount)
                     });
-                    refreshAll();
+                    updateDashboard();
+                    renderExpenses();
                 } else if (amount !== null) {
                     alert("कृपया सही रकम डालें!");
                 }
@@ -321,22 +347,8 @@
             if (pass === ADMIN_PASSWORD) {
                 if (confirm(`क्या आप सचमुच यह खर्च हटाना चाहते हैं?`)) {
                     mandalData.years[currentYear].expenses.splice(index, 1);
-                    refreshAll();
-                }
-            } else if (pass !== null) alert("गलत पासवर्ड!");
-        }
-
-        // नया सदस्य जोड़ना
-        function addNewMember() {
-            const pass = prompt("नया सदस्य जोड़ने के लिए एडमिन पासवर्ड डालें:");
-            if (pass === ADMIN_PASSWORD) {
-                const newName = prompt("नए सदस्य का नाम लिखें:");
-                if (newName && newName.trim() !== "") {
-                    const nextIdNum = Object.keys(mandalData.memberNames).length + 1;
-                    const newId = `m${nextIdNum}`;
-                    mandalData.memberNames[newId] = newName.trim();
-                    refreshAll();
-                    alert(`सफलतापूर्वक सदस्य जोड़ा गया! ID: ${newId.toUpperCase()}`);
+                    updateDashboard();
+                    renderExpenses();
                 }
             } else if (pass !== null) alert("गलत पासवर्ड!");
         }
@@ -348,7 +360,7 @@
                 if(pass !== null) alert("गलत पासवर्ड!");
                 return;
             }
-            const memberId = prompt("जिस सदस्य का नाम बदलना है उसका ID नंबर लिखें (जैसे: m1, m5):").toLowerCase();
+            const memberId = prompt("जिस सदस्य का नाम बदलना है उसका ID नंबर लिखें (जैसे: m1, m6):").toLowerCase();
             if (!memberId || !mandalData.memberNames[memberId]) {
                 alert("गलत ID!");
                 return;
@@ -356,7 +368,7 @@
             const newName = prompt(`ID ${memberId.toUpperCase()} का नया नाम लिखें:`);
             if (newName && newName.trim() !== "") {
                 mandalData.memberNames[memberId] = newName.trim();
-                refreshAll();
+                renderList();
                 alert("नाम सुधर गया है!");
             }
         }
@@ -382,7 +394,9 @@
                     const importedData = JSON.parse(e.target.result);
                     if (importedData.memberNames && importedData.years) {
                         mandalData = importedData;
-                        refreshAll();
+                        updateDashboard();
+                        renderList();
+                        renderExpenses();
                         alert("मास्टर डेटा सफलतापूर्वक लोड हो गया है!");
                     } else {
                         alert("गलत बैकअप फाइल!");
@@ -394,23 +408,26 @@
             reader.readAsText(file);
         }
 
-        // सर्च फ़िल्टर
+        // सर्च फ़िल्टर बटन
         function filterMembers(type) {
             currentFilter = type;
             ['all', 'paid', 'pending'].forEach(t => {
                 const btn = document.getElementById(`btn-${t}`);
                 btn.className = (t === type) ? "px-4 py-2 rounded-lg text-sm font-medium bg-orange-600 text-white shadow-sm whitespace-nowrap" : "px-4 py-2 rounded-lg text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 whitespace-nowrap";
             });
-            refreshAll();
+            renderList();
         }
 
         document.getElementById('search-input').addEventListener('input', (e) => {
             searchQuery = e.target.value;
-            refreshAll();
+            renderList();
         });
 
-        // बिना किसी लोड के तुरंत पहली बार रन करने के लिए सीधे कॉल करना
-        refreshAll();
+        window.onload = function() {
+            updateDashboard();
+            renderList();
+            renderExpenses();
+        };
     </script>
 </body>
 </html>
