@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 🔍 સર્ચ એન્જિન સેટિંગ્સ -->
+    <title>શ્રી પ્રગતિ ગણેશ યુવક મંડળ - લાઈવ હિસાબ</title>
+    <meta name="description" content="શ્રી પ્રગતિ ગણેશ યુવક મંડળનો લાઈવ ચોપડો અને ચંદાની વિગત.">
+    <meta name="keywords" content="શ્રી પ્રગતિ ગણેશ યુવક મંડળ, ગણેશ મંડળ, લાઈવ હિસાબ">
+    <meta name="robots" content="index, follow">
+    
+    <!-- PWA સેટઅપ અને આઈકોન કનેક્શન -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"શ્રી પ્રગતિ ગણેશ મંડળ એપ","short_name":"ગણેશ મંડળ","start_url":"./","display":"standalone","background_color":"%23f3f4f6","theme_color":"%23ea580c","orientation":"portrait"}'>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase Firestore SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- 📄 PDF કન્વર્ટર લાઈબ્રેરી -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- કડક ઓરેન્જ UI થીમ ડિઝાઇન -->
+    <style>
+        body { font-family: sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; box-sizing: border-box; }
+        
+        .header { background-color: #ea580c; color: white; text-align: center; padding: 20px 10px 15px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 50; display: block; }
+        .header-content { position: relative; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .menu-dot-btn { position: absolute; right: 5px; top: -5px; background: none; border: none; color: white; font-size: 22px; cursor: pointer; padding: 5px 10px; z-index: 60; }
+        
+        .dropdown-menu { display: none; position: absolute; right: 10px; top: 30px; background-color: white; min-width: 230px; box-shadow: 0px 4px 12px rgba(0,0,0,0.15); border-radius: 8px; z-index: 100; overflow: hidden; border: 1px solid #e5e7eb; }
+        .dropdown-menu button { color: #374151; padding: 12px 16px; text-decoration: none; display: flex; align-items: center; gap: 10px; width: 100%; border: none; background: none; text-align: left; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .dropdown-menu button:hover { background-color: #f3f4f6; color: #ea580c; }
+        
+        .logo-container { width: 80px; height: 80px; margin: 0 auto 10px auto; border-radius: 50%; background-color: white; border: 3px solid #ffedd5; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.2); position: relative; }
+        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .header h1 { margin: 0; font-size: 21px; font-weight: bold; width: 100%; text-align: center; }
+        .header p { margin: 6px 0 0 0; font-size: 12px; color: #ffedd5; width: 100%; text-align: center; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; padding-bottom: 80px; }
+
+        .year-box { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
+        .year-label { font-weight: bold; color: #374151; font-size: 14px; }
+        .year-input { padding: 8px 12px; border-radius: 8px; border: 2px solid #ea580c; font-weight: bold; color: #ea580c; background: white; font-size: 14px; max-width: 100px; text-align: center; }
+
+        .grid { display: grid; grid-template-cols: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .card { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; }
+        .card p { margin: 0; font-size: 11px; color: #6b7280; font-weight: bold; text-transform: uppercase; }
+        .card h2 { margin: 5px 0 0 0; font-size: 19px; font-weight: 800; }
+        .c-orange { border-bottom: 4px solid #ea580c; }
+        .c-green { border-bottom: 4px solid #16a34a; color: #16a34a; }
+        .c-blue { border-bottom: 4px solid #2563eb; color: #2563eb; }
+        .c-red { border-bottom: 4px solid #dc2626; color: #dc2626; }
+        .c-purple { border-bottom: 4px solid #9333ea; color: #9333ea; }
+        .c-teal { border-bottom: 4px solid #0d9488; color: #0d9488; }
+        .c-pink { border-bottom: 4px solid #e11d48; color: #e11d48; }
+        .c-amber { border-bottom: 4px solid #d97706; color: #d97706; }
+
+        .search-box { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .search-input-wrapper { position: relative; width: 100%; }
+        .search-input-wrapper i { position: absolute; left: 12px; top: 12px; color: #9ca3af; }
+        .search-input { width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        .filter-buttons { display: flex; gap: 8px; margin-top: 12px; }
+        .btn-filter { flex: 1; padding: 8px; font-size: 13px; font-weight: 500; border: none; border-radius: 8px; cursor: pointer; background-color: #e5e7eb; color: #374151; }
+        .btn-filter.active { background-color: #ea580c; color: white; }
+
+        .section-box { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden; }
+        .section-title { padding: 12px 15px; background: #f9fafb; font-weight: bold; font-size: 14px; color: #374151; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; line-height: 1.5; }
+        .list-container { max-height: 450px; overflow-y: auto; }
+        .row-item { padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+        
+        .badge-paid { background-color: #f0fdf4; color: #16a34a; font-weight: bold; padding: 4px 12px; border-radius: 9999px; font-size: 13px; cursor: pointer; }
+        .btn-pending { background-color: #fef9c3; color: #a16207; font-weight: bold; padding: 5px 12px; border: none; border-radius: 9999px; font-size: 12px; }
+        .btn-add-item { background-color: #ea580c; color: white; padding: 5px 10px; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; display: none; }
+        .btn-trash { color: #ef4444; border: none; background: none; cursor: pointer; margin-right: 10px; display: none; }
+        .btn-edit-inline { color: #d97706; border: none; background: none; cursor: pointer; margin-right: 8px; display: none; font-size: 14px; }
+        .btn-edit-inline-purple { color: #9333ea; border: none; background: none; cursor: pointer; margin-right: 8px; display: none; font-size: 14px; }
+
+        .admin-panel { background: #fffbeb; border: 1px solid #fef3c7; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
+        .admin-panel h3 { margin: 0 0 10px 0; font-size: 13px; color: #92400e; font-weight: bold; }
+        .flex-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .btn-action { padding: 8px 14px; font-size: 12px; font-weight: bold; border: none; border-radius: 8px; color: white; cursor: pointer; }
+        .bg-green { background-color: #16a34a; }
+        .bg-amber { background-color: #d97706; }
+        .bg-gray { background-color: #4b5563; }
+        .bg-red { background-color: #dc2626; }
+        .bg-purple { background-color: #9333ea; }
+        .bg-blue { background-color: #2563eb; }
+        .bg-teal { background-color: #0d9488; }
+        .hidden-admin { display: none !important; }
+        
+        #hidden-logo-file-input { display: none; }
+
+        /* પોપ-અપ મોડલ સેટિંગ્સ */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; }
+        .modal-box { background: white; width: 95%; max-width: 500px; border-radius: 16px; padding: 20px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; }
+        .modal-close-btn { position: absolute; top: 15px; right: 15px; background: #f3f4f6; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #4b5563; }
+        
+        .prasad-row-item, .notebook-row-item, .arti-row-item { padding: 12px 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; border-bottom: 1px solid #f3f4f6; font-size: 14px; gap: 6px; width: 100%; }
+        .prasad-top-bar, .notebook-top-bar, .arti-top-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .prasad-names-box, .notebook-content-box, .arti-lyrics-box { font-weight: 500; color: #4b5563; font-size: 14px; white-space: pre-wrap; line-height: 1.6; background: #fafafa; padding: 10px 12px; border-radius: 8px; width: 100%; border: 1px dashed #e5e7eb; box-sizing: border-box; }
+        
+        /* 🛠️ ફિક્સ: હેડરની અંદર બટન બરાબર દેખાય તે માટેની સ્પેશિયલ ડિઝાઇન */
+        .modal-title-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ea580c; padding-bottom: 10px; margin-bottom: 15px; width: 100%; padding-right: 35px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+    <div id="mandal-app-content">
+        <div class="header">
+            <div class="header-content">
+                <button onclick="toggleDropdownMenu()" class="menu-dot-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                
+                <div id="mandal-dropdown" class="dropdown-menu">
+                    <button onclick="openPrasadModal()"><i class="fa-solid fa-utensils" style="color: #c2410c;"></i> 🥞 પ્રસાદની વારી યાદી</button>
+                    <button onclick="openNotebookModal()"><i class="fa-solid fa-book" style="color: #9333ea;"></i> 📔 નોટબુક (ખાસ નોંધ)</button>
+                    <button onclick="openArtiModal()"><i class="fa-solid fa-music" style="color: #ea580c;"></i> 🎵 આરતી અને થાળ</button>
+                    <button onclick="downloadPDFReport()"><i class="fa-solid fa-file-pdf" style="color: #2563eb;"></i> PDF રિપોર્ટ ડાઉનલોડ</button>
+                    <button onclick="showAppDownloadGuide()"><i class="fa-solid fa-mobile-screen-button" style="color: #ea580c;"></i> એપ ડાઉનલોડ / ઇન્સ્ટોલ કરો</button>
+                </div>
+
+                <div class="logo-container">
+                    <img id="mandal-logo-img" src="logo.jpg" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23ea580c\'><path d=\'M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 18a8 8 0 118-8 8 8 0 01-8 8z\'/><circle cx=\'12\' cy=\'12\' r=\'4\' fill=\'%23ea580c\'/></svg>';">
+                </div>
+                <h1>🙏 શ્રી પ્રગતિ ગણેશ યુવક મંડળ 🙏</h1>
+                <p id="sync-status">🔄 સર્વર સાથે લાઈવ કનેક્શન થઈ રહ્યું છે...</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="year-box">
+                <span class="year-label"><i class="fa-solid fa-calendar-days" style="color:#ea580c; margin-right:5px;"></i>  ઉત્સવનું વર્ષ લખો:</span>
+                <input type="text" id="year-input" class="year-input" value="" maxlength="4">
+            </div>
+
+            <!-- Live Summary Dashboard -->
+            <div class="grid">
+                <div class="card c-amber"><p>ગયા વર્ષની બચત</p><h2 id="prev-year-balance">₹0</h2></div>
+                <div class="card c-orange"><p>કુલ સભ્યો</p><h2 id="total-members-count">0</h2></div>
+                <div class="card c-green"><p>જમા સભ્યો</p><h2 id="paid-count">0</h2></div>
+                <div class="card c-blue"><p>સભ્યોનો ચંદો</p><h2 id="total-collection">₹0</h2></div>
+                <div class="card c-teal"><p>ઘર દીઠ ફાળો</p><h2 id="total-house-funds">₹0</h2></div>
+                <div class="card c-pink"><p>કુલ દાન</p><h2 id="total-donations">₹0</h2></div>
+                <div class="card c-red" style="grid-column: span 2;"><p>ચાલુ વર્ષનો કુલ ખર્ચ</p><h2 id="total-expenses">₹0</h2></div>
+                <div class="card c-purple" style="grid-column: span 2;"><p>કુલ કેશ બેલેન્સ</p><h2 id="net-balance">₹0</h2></div>
+            </div>
+
+            <!-- Search Bar & Filters -->
+            <div class="search-box" id="search-filter-area">
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="શોધો..." class="search-input">
+                </div>
+                <div class="filter-buttons">
+                    <button onclick="filterMembers('all')" id="btn-all" class="btn-filter active">બધા સભ્યો</button>
+                    <button onclick="totalMembersFilter('paid')" id="btn-paid" class="btn-filter">જમા</button>
+                    <button onclick="filterMembers('pending')" id="btn-pending" class="btn-filter">બાકી</button>
+                </div>
+            </div>
+
+            <div class="section-box">
+                <div class="section-title"><span>👤 સભ્યવાર ચંદાની વિગત</span></div>
+                <div id="members-list" class="list-container"></div>
+            </div>
+
+            <div class="section-box" style="border: 1px solid #ccfbf1;">
+                <div class="section-title" style="background: #f0fdf4; color: #0f766e;">
+                    <span><i class="fa-solid fa-house-chimney mr-1"></i> 🏡 ઘર દીઠ ફાળાની વિગત</span>
+                    <button onclick="addHouseFund()" id="add-house-btn" class="btn-add-item">➕ ઉમેરો</button>
+                </div>
+                <div id="house-list" class="list-container"></div>
+            </div>
+
+            <div class="section-box" style="border: 1px solid #fce7f3;">
+                <div class="section-title" style="background: #fdf2f8; color: #9d174d;">
+                    <span><i class="fa-solid fa-gift mr-1"></i> 🎁 દાન દાતાઓની વિગત</span>
+                    <button onclick="addDonor()" id="add-don-btn" class="btn-add-item">➕ ઉમેરો</button>
+                </div>
+                <div id="donors-list" class="list-container"></div>
+            </div>
+
+            <div class="section-box" style="border: 1px solid #fee2e2;">
+                <div class="section-title expense-head">
+                    <span><i class="fa-solid fa-wallet mr-1"></i> 💸 ખર્ચની વિગતો</span>
+                    <button onclick="addExpense()" id="add-exp-btn" class="btn-add-item">➕ ઉમેરો</button>
+                </div>
+                <div id="expenses-list" class="list-container"></div>
+            </div>
+
+            <!-- Admin Control Panel -->
+            <div class="admin-panel" id="admin-control-area">
+                <h3 id="admin-title">🔒 પબ્લિક મોડ (રીડ-ઓન્લી)</h3>
+                <div class="flex-buttons">
+                    <button onclick="toggleAdminMode()" id="login-toggle-btn" class="btn-action bg-gray">🔐 એડમિન લોક ખોલો</button>
+                    <button onclick="addNewMember()" id="add-mem-btn" class="btn-action bg-green hidden-admin">નવો સભ્ય ઉમેરો</button>
+                    <button onclick="handleSmartNameEdit()" id="edit-mem-btn" class="btn-action bg-amber hidden-admin">નામ સુધારો</button>
+                    <button onclick="copyDataFromPreviousYear()" id="copy-mem-btn" class="btn-action bg-teal hidden-admin">📋 પાછલા વર્ષનો ડેટા કોપી કરો</button>
+                    <button onclick="triggerLogoUpload()" id="change-logo-btn" class="btn-action bg-blue hidden-admin">🖼️ લોગો બદલો</button>
+                    <input type="file" id="hidden-logo-file-input" accept="image/*" onchange="handleLogoFileSelect(event)">
+                    <button onclick="changeAdminPassword()" id="change-pass-btn" class="btn-action bg-purple hidden-admin">🔑 પાસવર્ડ બદલો</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- પ્રસાદ વારી પોપ-અપ મોડલ -->
+    <div id="prasad-modal" class="modal-overlay" onclick="closePrasadModalOutside(event)">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closePrasadModal()">×</button>
+            <div class="modal-title-bar" style="border-bottom: 2px solid #ea580c;">
+                <h3 style="margin: 0; color: #c2410c; font-size: 17px;"><i class="fa-solid fa-utensils mr-1"></i> 🥞 પ્રસાદની વારી યાદી</h3>
+                <button onclick="addPrasadVari()" id="add-prasad-btn-modal" class="btn-add-item" style="display: none;">➕ ઉમેરો</button>
+            </div>
+            <div id="prasad-list" style="max-height: 50vh; overflow-y: auto; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <!-- નોટબુક પોપ-અપ મોડલ -->
+    <div id="notebook-modal" class="modal-overlay" onclick="closeNotebookModalOutside(event)">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeNotebookModal()">×</button>
+            <div class="modal-title-bar" style="border-bottom: 2px solid #9333ea;">
+                <h3 style="margin: 0; color: #7e22ce; font-size: 17px;"><i class="fa-solid fa-book mr-1"></i> 📔 નોટબુક (ખાસ નોંધ)</h3>
+                <button onclick="addNotebookNote()" id="add-note-btn-modal" class="btn-add-item" style="display: none; background-color: #9333ea;">➕ ઉમેરો</button>
+            </div>
+            <div id="notebook-list" style="max-height: 50vh; overflow-y: auto; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <!-- 🛠️ ફિક્સ કરેલું આરતી અને થાળ પોપ-અપ મોડલ -->
+    <div id="arti-modal" class="modal-overlay" onclick="closeArtiModalOutside(event)">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeArtiModal()">×</button>
+            <!-- 🛠️ ફિક્સ: બટન અહીં ટાઇટલની લાઇનમા સેટ કરી દીધું જેથી ચોખ્ખું દેખાશે ભાઈ -->
+            <div class="modal-title-bar">
+                <h3 style="margin: 0; color: #ea580c; font-size: 17px;"><i class="fa-solid fa-music mr-1"></i> 🎵 આરતી અને થાળ</h3>
+                <button onclick="addNewArti()" id="add-arti-btn-modal" class="btn-add-item" style="display: none; background-color: #ea580c;">➕ ઉમેરો</button>
+            </div>
+            <div id="arti-list" style="max-height: 55vh; overflow-y: auto; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAh2lcxstR_mTQQI-pabY77ug9MWK9x4m4",
+            authDomain: "pragati-ganesh-mandal.firebaseapp.com",
+            projectId: "pragati-ganesh-mandal",
+            storageBucket: "pragati-ganesh-mandal.firebasestorage.app",
+            messagingSenderId: "306990038856",
+            appId: "1:306990038856:web:173fd8795068bc14a9fd7d"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let currentAdminPassword = "9680"; 
+        let isAdmin = false;
+        let currentFilter = 'all';
+        let searchQuery = '';
+        
+        let currentLiveYear = new Date().getFullYear().toString();
+        let selectedYear = currentLiveYear; 
+        document.getElementById('year-input').value = currentLiveYear;
+
+        let localMembers = [], localExpenses = [], localDonors = [], localHouseFunds = [], localPrasadVari = [], localNotebookNotes = [], localArtiList = [];
+        let prevYearSavedBalance = 0;
+
+        let unsubMembers = null, unsubExpenses = null, unsubDonors = null, unsubHouseFunds = null, unsubPrasad = null, unsubSettings = null, unsubNotebook = null, unsubArti = null;
+
+        function toggleDropdownMenu() {
+            const menu = document.getElementById('mandal-dropdown');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-dot-btn') && !event.target.matches('.fa-ellipsis-vertical')) {
+                const dropdown = document.getElementById('mandal-dropdown');
+                if (dropdown && dropdown.style.display === 'block') dropdown.style.display = 'none';
+            }
+        }
+
+        function showAppDownloadGuide() {
+            document.getElementById('mandal-dropdown').style.display = 'none';
+            alert("📲 એપ ડાઉનલોડ કરવા માટે:\n\nChrome બ્રાઉઝરમાં ઉપર જમણી બાજુ ખૂણામાં આપેલા ત્રણ ટપકા પર ક્લિક કરો, ત્યારબાદ 'Install app' પસંદ કરો!");
+        }
+
+        function openPrasadModal() {
+            document.getElementById('mandal-dropdown').style.display = 'none';
+            document.getElementById('prasad-modal').style.display = 'flex';
+            renderPrasadList();
+        }
+        function closePrasadModal() { document.getElementById('prasad-modal').style.display = 'none'; }
+        function closePrasadModalOutside(e) { if(e.target.id === 'prasad-modal') closePrasadModal(); }
+
+        function openNotebookModal() {
+            document.getElementById('mandal-dropdown').style.display = 'none';
+            document.getElementById('notebook-modal').style.display = 'flex';
+            renderNotebookList();
+        }
+        function closeNotebookModal() { document.getElementById('notebook-modal').style.display = 'none'; }
+        function closeNotebookModalOutside(e) { if(e.target.id === 'notebook-modal') closeNotebookModal(); }
+
+        function openArtiModal() {
+            document.getElementById('mandal-dropdown').style.display = 'none';
+            document.getElementById('arti-modal').style.display = 'flex';
+            renderArtiList();
+        }
+        function closeArtiModal() { document.getElementById('arti-modal').style.display = 'none'; }
+        function closeArtiModalOutside(e) { if(e.target.id === 'arti-modal') closeArtiModal(); }
+
+        const englishSearchMap = {
+            "nimesh": "નિમેષ નિમિષ", "rahul": "રાહુલ", "rohan": "રોહન રોહાન", "nirmal": "નિર્મલ", "kartik": "કાર્તિક", "bhai": "ભાઈ", "patel": "પટેલ", "halpati": "હળપતિ હલપતિ",
+            "kaushik": "કૌશિક કૌસિક", "kausihk": "કૌશિક કૌસિક", "koushik": "કૌશિક કૌસિક"
+        };
+
+        const romanGujaratiMapping = [
+            { eng: 'nimesh', guj: 'નિમેષ' }, { eng: 'rahul', guj: 'રાહુલ' },
+            { eng: 'rohan', guj: 'રોહન' }, { eng: 'nirmal', guj: 'નિર્મલ' },
+            { eng: 'kartik', guj: 'કાર્તિક' }, { eng: 'bhai', guj: 'ભાઈ' },
+            { eng: 'patel', guj: 'પટેલ' }, { eng: 'halpati', guj: 'હળપતિ' },
+            { eng: 'kaushik', guj: 'કૌશિક' }, { eng: 'kausihk', guj: 'કૌશિક' },
+            { eng: 'koushik', guj: 'કૌશિક' }, { eng: 'dev', guj: 'દેવ' },
+            { eng: 'satish', guj: 'સતીષ' }, { eng: 'umesh', guj: 'ઉમેશ' },
+            { eng: 'nim', guj: 'નિમે' }, { eng: 'rah', guj: 'રાહુ' }, { eng: 'roh', guj: 'રોહ' },
+            { eng: 'kau', guj: 'કૌશ' }, { eng: 'sat', guj: 'સતી' }, { eng: 'um', guj: 'ઉમે' },
+            { eng: 'kar', guj: 'કાર્' }, { eng: 'pat', guj: 'પટે' }, { eng: 'hal', guj: 'હળ' }
+        ];
+
+        function checkSearchMatch(nameStr, idStr, query) {
+            let cleanQuery = query.toLowerCase().trim();
+            if (cleanQuery === "") return true;
+
+            let nameLower = nameStr.toLowerCase();
+            let idLower = idStr.toLowerCase();
+
+            if (nameLower.includes(cleanQuery) || idLower.includes(cleanQuery)) return true;
+
+            for (let map of romanGujaratiMapping) {
+                if (cleanQuery.includes(map.eng) || map.eng.includes(cleanQuery)) {
+                    if (nameLower.includes(map.guj)) return true;
+                }
+            }
+            return false;
+        }
+
+        function fetchPreviousYearBalance(year) {
+            let prevYear = (parseInt(year) - 1).toString();
+            Promise.all([
+                db.collection("mandal_years").doc(prevYear).collection("members").get(),
+                db.collection("mandal_years").doc(prevYear).collection("house_funds").get(),
+                db.collection("mandal_years").doc(prevYear).collection("donors").get(),
+                db.collection("mandal_years").doc(prevYear).collection("expenses").get()
+            ]).then(([memSnap, houseSnap, donSnap, expSnap]) => {
+                let pAmt = 0, pHouse = 0, pDon = 0, pExp = 0;
+                memSnap.forEach(doc => { if(doc.data().status === 'paid') pAmt += parseInt(doc.data().amount || 0); });
+                houseSnap.forEach(doc => { pHouse += parseInt(doc.data().amount || 0); });
+                donSnap.forEach(doc => { pDon += parseInt(doc.data().amount || 0); });
+                expSnap.forEach(doc => { pExp += parseInt(doc.data().amount || 0); });
+
+                prevYearSavedBalance = (pAmt + pHouse + pDon) - pExp;
+                if(prevYearSavedBalance < 0) prevYearSavedBalance = 0;
+                document.getElementById('prev-year-balance').innerText = `₹${prevYearSavedBalance}`;
+                refreshUI();
+            }).catch(err => {
+                prevYearSavedBalance = 0;
+                document.getElementById('prev-year-balance').innerText = `₹0`;
+                refreshUI();
+            });
+        }
+
+        function copyDataFromPreviousYear() {
+            if (!isAdmin) return;
+            let prevYear = (parseInt(selectedYear) - 1).toString();
+            
+            if (localMembers.length > 0 || localHouseFunds.length > 0 || localPrasadVari.length > 0 || localNotebookNotes.length > 0 || localArtiList.length > 1) {
+                if (!confirm("🚨 આ વર્ષમાં પહેલેથી જ ડેટા ઉમેરેલો છે! શું તમે પાછલા વર્ષનો બાકી ડેટા પણ આ લિસ્ટમાં ઉમેરવા માંગો છો?")) return;
+            } else {
+                if (!confirm(`📋 શું તમે વર્ષ ${prevYear} ના બધા જ સભ્યો, ઘર ફાળાના નામ, પ્રસાદ, નોટબુક અને આખી આરતી યાદી વર્ષ ${selectedYear} માં નકલ (Copy) કરવા માંગો છો?`)) return;
+            }
+
+            db.collection("mandal_years").doc(prevYear).collection("members").get().then((snapshot) => {
+                if (!snapshot.empty) {
+                    let batch = db.batch();
+                    snapshot.forEach((doc) => {
+                        batch.set(db.collection("mandal_years").doc(selectedYear).collection("members").doc(doc.id), {
+                            name: doc.data().name, status: "pending", amount: 0
+                        });
+                    });
+                    return batch.commit();
+                }
+            });
+
+            db.collection("mandal_years").doc(prevYear).collection("house_funds").get().then((snapshot) => {
+                if (!snapshot.empty) {
+                    let batch = db.batch();
+                    snapshot.forEach((doc) => {
+                        batch.set(db.collection("mandal_years").doc(selectedYear).collection("house_funds").doc(doc.id), {
+                            name: doc.data().name, amount: 0
+                        });
+                    });
+                    return batch.commit();
+                }
+            });
+
+            db.collection("mandal_years").doc(prevYear).collection("prasad_vari").get().then((snapshot) => {
+                if (!snapshot.empty) {
+                    let batch = db.batch();
+                    snapshot.forEach((doc) => {
+                        batch.set(db.collection("mandal_years").doc(selectedYear).collection("prasad_vari").doc(doc.id), {
+                            name: doc.data().name, date: doc.data().date
+                        });
+                    });
+                    return batch.commit();
+                }
+            });
+
+            db.collection("mandal_years").doc(prevYear).collection("notebook_notes").get().then((snapshot) => {
+                if (!snapshot.empty) {
+                    let batch = db.batch();
+                    snapshot.forEach((doc) => {
+                        batch.set(db.collection("mandal_years").doc(selectedYear).collection("notebook_notes").doc(doc.id), {
+                            content: doc.data().content, date: doc.data().date
+                        });
+                    });
+                    return batch.commit();
+                }
+            });
+
+            db.collection("mandal_years").doc(prevYear).collection("arti_list").get().then((snapshot) => {
+                if (!snapshot.empty) {
+                    let batch = db.batch();
+                    snapshot.forEach((doc) => {
+                        if(doc.id !== 'a1') { 
+                            batch.set(db.collection("mandal_years").doc(selectedYear).collection("arti_list").doc(doc.id), {
+                                title: doc.data().title, lyrics: doc.data().lyrics
+                            });
+                        }
+                    });
+                    return batch.commit();
+                }
+            }).then(() => {
+                alert("✅ પાછલા વર્ષનો બધો જ ચોપડો અને આરતી યાદી સફળતાપૂર્વક કોપી થઈ ગઈ છે ભાઈ!");
+            }).catch(err => { alert("ભૂલ આવી: " + err.message); });
+        }
+
+        function startLiveSync() {
+            if (unsubMembers) unsubMembers();
+            if (unsubExpenses) unsubExpenses();
+            if (unsubDonors) unsubDonors();
+            if (unsubHouseFunds) unsubHouseFunds();
+            if (unsubPrasad) unsubPrasad();
+            if (unsubSettings) unsubSettings();
+            if (unsubNotebook) unsubNotebook();
+            if (unsubArti) unsubArti();
+
+            fetchPreviousYearBalance(selectedYear);
+
+            unsubSettings = db.collection("mandal_config").doc("app_settings")
+            .onSnapshot((doc) => {
+                if(doc.exists && doc.data().logo_data) document.getElementById('mandal-logo-img').src = doc.data().logo_data;
+            });
+
+            unsubMembers = db.collection("mandal_years").doc(selectedYear).collection("members")
+            .onSnapshot((snapshot) => {
+                localMembers = [];
+                snapshot.forEach(doc => { localMembers.push({ id: doc.id, ...doc.data() }); });
+                document.getElementById('sync-status').innerText = "🚀 ઓગસ્ટ " + selectedYear + " લાઈવ ચોપડો કનેક્ટેડ!";
+                refreshUI();
+            });
+
+            unsubExpenses = db.collection("mandal_years").doc(selectedYear).collection("expenses")
+            .onSnapshot((snapshot) => {
+                localExpenses = []; snapshot.forEach(doc => { localExpenses.push({ id: doc.id, ...doc.data() }); });
+                refreshUI();
+            });
+
+            unsubDonors = db.collection("mandal_years").doc(selectedYear).collection("donors")
+            .onSnapshot((snapshot) => {
+                localDonors = []; snapshot.forEach(doc => { localDonors.push({ id: doc.id, ...doc.data() }); });
+                refreshUI();
+            });
+
+            unsubHouseFunds = db.collection("mandal_years").doc(selectedYear).collection("house_funds")
+            .onSnapshot((snapshot) => {
+                localHouseFunds = []; snapshot.forEach(doc => { localHouseFunds.push({ id: doc.id, ...doc.data() }); });
+                refreshUI();
+            });
+
+            unsubPrasad = db.collection("mandal_years").doc(selectedYear).collection("prasad_vari")
+            .onSnapshot((snapshot) => {
+                localPrasadVari = []; snapshot.forEach(doc => { localPrasadVari.push({ id: doc.id, ...doc.data() }); });
+                refreshUI();
+            });
+
+            unsubNotebook = db.collection("mandal_years").doc(selectedYear).collection("notebook_notes")
+            .onSnapshot((snapshot) => {
+                localNotebookNotes = [];
+                snapshot.forEach(doc => { localNotebookNotes.push({ id: doc.id, ...doc.data() }); });
+                if(document.getElementById('notebook-modal').style.display === 'flex') renderNotebookList();
+            });
+
+            unsubArti = db.collection("mandal_years").doc(selectedYear).collection("arti_list")
+            .onSnapshot((snapshot) => {
+                localArtiList = [];
+                snapshot.forEach(doc => { localArtiList.push({ id: doc.id, ...doc.data() }); });
+                
+                let hasMainArti = localArtiList.some(a => a.id === 'a1');
+                if(!hasMainArti) {
+                    // 🛠️ ફિક્સ: આખી આરતી ૧૦૦% કમ્પ્લીટ અને શુદ્ધ ગુજરાતી અક્ષરોમાં સેટઅપ
+                    db.collection("mandal_years").doc(selectedYear).collection("arti_list").doc('a1').set({
+                        title: "જય ગણેશ જય ગણેશ દેવા (આરતી)",
+                        lyrics: "જય ગણેશ જય ગણેશ, જય ગણેશ દેવા ।\nમાતા જાકી પાર્વતી, પિતા મહાદેવા ॥\n\nએક દંત દયાવંત, ચાર ભુજા ધારી ।\nમાથે સિંદૂર સોહે, મૂષકની સવારી ॥\n\nપાન ચઢે ફૂલ ચઢે, ઔર ચઢે મેવા ।\nલડ્ડુઅન કા ભોગ લાગે, સંત કરેં સેવા ॥\n\nજય ગણેશ જય ગણેશ, જય ગણેશ દેવા ।\nમાતા જાકી પાર્વતી, પિતા મહાદેવા ॥\n\nઅંધન કો આંખ દેત, કોઢિન કો કાયા ।\nબંઝન કો પુત્ર દેત, નિર્ધન કો માયા ॥\n\n'સૂર' શ્યામ શરણ આયે, સફલ કરો સેવા ।\nજય ગણેશ જય ગણેશ, જય ગણેશ દેવા ॥"
+                    });
+                }
+                if(document.getElementById('arti-modal').style.display === 'flex') renderArtiList();
+            });
+        }
+
+        function toggleAdminMode() {
+            if(!isAdmin) {
+                const pass = prompt("🔐 સિક્રેટ એડમિન પાસવર્ડ લખો:");
+                if(pass === currentAdminPassword) {
+                    isAdmin = true;
+                    document.getElementById('login-toggle-btn').innerText = "🔒 એડમિન લોગઆઉટ";
+                    document.getElementById('login-toggle-btn').style.backgroundColor = "#dc2626";
+                    document.getElementById('admin-title').innerText = "🔓 એડમિન મોડ ચાલુ છે";
+                    document.getElementById('admin-title').style.color = "#16a34a";
+                    ['add-mem-btn', 'edit-mem-btn', 'copy-mem-btn', 'change-logo-btn', 'change-pass-btn'].forEach(id => document.getElementById(id).classList.remove('hidden-admin'));
+                    
+                    ['add-exp-btn', 'add-don-btn', 'add-house-btn'].forEach(id => document.getElementById(id).style.display = "block");
+                    document.getElementById('add-prasad-btn-modal').style.display = "block";
+                    document.getElementById('add-note-btn-modal').style.display = "block";
+                    document.getElementById('add-arti-btn-modal').style.display = "block"; 
+                    
+                    startLiveSync(); 
+                } else if(pass !== null) alert("ખોટો પાસવર્ડ!");
+            } else {
+                isAdmin = false;
+                document.getElementById('login-toggle-btn').innerText = "🔐 એડમિન લોક ખોલો";
+                document.getElementById('login-toggle-btn').style.backgroundColor = "#4b5563";
+                document.getElementById('admin-title').innerText = "🔒 પબ્લિક મોડ (રીડ-ઓન્લી)";
+                document.getElementById('admin-title').style.color = "#92400e";
+                ['add-mem-btn', 'edit-mem-btn', 'copy-mem-btn', 'change-logo-btn', 'change-pass-btn'].forEach(id => document.getElementById(id).classList.add('hidden-admin'));
+                ['add-exp-btn', 'add-don-btn', 'add-house-btn'].forEach(id => document.getElementById(id).style.display = "none");
+                document.getElementById('add-prasad-btn-modal').style.display = "none";
+                document.getElementById('add-note-btn-modal').style.display = "none";
+                document.getElementById('add-arti-btn-modal').style.display = "none"; 
+            }
+            refreshUI();
+        }
+
+        function changeAdminPassword() {
+            if(!isAdmin) return;
+            const currentCheck = prompt("વર્તમાન પાસવર્ડ લખો:");
+            if (currentCheck === currentAdminPassword) {
+                const newPass = prompt("નવો સિક્રેટ પાસવર્ડ સેટ કરો:");
+                if (newPass && newPass.trim() !== "") { currentAdminPassword = newPass.trim(); alert("✅ પાસવર્ડ બદલાઈ ગયો!"); }
+            }
+        }
+
+        function refreshUI() {
+            let paidCount = 0, totalAmt = 0, totalExp = 0, totalDon = 0, totalHouse = 0;
+
+            localMembers.forEach(m => { if (m.status === 'paid' && parseInt(m.amount || 0) > 0) { paidCount++; totalAmt += parseInt(m.amount || 0); } });
+            localExpenses.forEach(e => totalExp += parseInt(e.amount || 0));
+            localDonors.forEach(d => totalDon += parseInt(d.amount || 0));
+            localHouseFunds.forEach(h => totalHouse += parseInt(h.amount || 0));
+
+            document.getElementById('total-members-count').innerText = localMembers.length;
+            document.getElementById('paid-count').innerText = paidCount;
+            document.getElementById('total-collection').innerText = `₹${totalAmt}`;
+            document.getElementById('total-expenses').innerText = `₹${totalExp}`;
+            document.getElementById('total-donations').innerText = `₹${totalDon}`;
+            document.getElementById('total-house-funds').innerText = `₹${totalHouse}`;
+            
+            document.getElementById('net-balance').innerText = `₹${(prevYearSavedBalance + totalAmt + totalHouse + totalDon) - totalExp}`;
+
+            localMembers.sort((a, b) => (parseInt(a.id.replace('m', '')) || 0) - (parseInt(b.id.replace('m', '')) || 0));
+
+            const listContainer = document.getElementById('members-list');
+            listContainer.innerHTML = '';
+            localMembers.forEach(m => {
+                let searchMatch = checkSearchMatch(m.name, m.id, searchQuery);
+                let displayStatus = (parseInt(m.amount || 0) === 0) ? 'pending' : m.status;
+
+                if (searchMatch && (currentFilter === 'all' || displayStatus === currentFilter)) {
+                    const item = document.createElement('div'); item.className = "row-item";
+                    
+                    let badge = displayStatus === 'paid' 
+                        ? (isAdmin ? `<span onclick="markAsPaid('${m.id}', ${m.amount})" class='badge-paid'>₹${m.amount} જમા ✏️</span>` : `<span class='badge-paid'>₹${m.amount} જમા</span>`)
+                        : (isAdmin ? `<button onclick="markAsPaid('${m.id}', 500)" class='btn-pending'>💸 જમા કરો</button>` : `<span class='btn-pending'>💸 બાકી</span>`);
+                    
+                    let trashBtn = isAdmin ? `<button onclick="deleteGenericItem('members-list', '${m.id}')" class='btn-trash' style='display:inline-block;'><i class="fa-solid fa-trash-can"></i></button>` : "";
+                    
+                    item.innerHTML = `<div>${trashBtn}<span style="color:#9ca3af; font-weight:bold; margin-right:8px;">${m.id.toUpperCase()}</span><span style="font-weight:bold; color:#1f2937; font-size:15px;">${m.name}</span></div><div>${badge}</div>`;
+                    listContainer.appendChild(item);
+                }
+            });
+
+            localPrasadVari.sort((a, b) => (parseInt(a.id.replace('p', '')) || 0) - (parseInt(b.id.replace('p', '')) || 0));
+            renderPrasadList();
+
+            localHouseFunds.sort((a, b) => (parseInt(a.id.replace('h', '')) || 0) - (parseInt(b.id.replace('h', '')) || 0));
+            renderGenericList('house-list', localHouseFunds, true);
+            renderGenericList('donors-list', localDonors, false);
+            renderGenericList('expenses-list', localExpenses, false, true);
+        }
+
+        function renderPrasadList() {
+            const container = document.getElementById('prasad-list'); container.innerHTML = '';
+            let countDisplayed = 0;
+
+            localPrasadVari.forEach(item => {
+                let searchMatch = checkSearchMatch(item.name, item.id, searchQuery);
+                if (!searchMatch) return;
+
+                countDisplayed++;
+                const div = document.createElement('div'); div.className = "prasad-row-item";
+                
+                let trashBtn = isAdmin ? `<button onclick="deleteGenericItem('prasad-list', '${item.id}')" class='btn-trash' style='display:inline-block; margin-bottom: 2px;'><i class="fa-solid fa-trash-can"></i></button>` : "";
+                let editBtn = isAdmin ? `<button onclick="editPrasadInline('${item.id}', '${item.name}', '${item.date}')" class='btn-edit-inline' style='display:inline-block;'><i class="fa-solid fa-pencil"></i></button>` : "";
+                let displayID = `<span style="color:#9ca3af; font-weight:bold; margin-right:8px;">${item.id.toUpperCase()}</span>`;
+                
+                div.innerHTML = `
+                    <div class="prasad-top-bar">
+                        <div>${trashBtn}${editBtn}${displayID}</div>
+                        <div style='font-weight:bold; padding:4px 12px; border-radius:9999px; font-size:13px; color:#c2410c; background:#fff7ed;'>📅 ${item.date}</div>
+                    </div>
+                    <div class="prasad-names-box">${item.name}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            if(localPrasadVari.length === 0 || countDisplayed === 0) {
+                container.innerHTML = `<div style="padding:20px; text-align:center; color:#9ca3af; font-size:13px;">કોઈ માહિતી નથી</div>`;
+            }
+        }
+
+        function renderNotebookList() {
+            const container = document.getElementById('notebook-list'); container.innerHTML = '';
+            localNotebookNotes.sort((a, b) => (parseInt(a.id.replace('n', '')) || 0) - (parseInt(b.id.replace('n', '')) || 0));
+
+            localNotebookNotes.forEach(item => {
+                const div = document.createElement('div'); div.className = "notebook-row-item";
+                let trashBtn = isAdmin ? `<button onclick="deleteGenericItem('notebook-list', '${item.id}')" class='btn-trash' style='display:inline-block; margin-bottom: 2px;'><i class="fa-solid fa-trash-can"></i></button>` : "";
+                let editBtn = isAdmin ? `<button onclick="editNotebookInline('${item.id}', '${item.content}', '${item.date}')" class='btn-edit-inline-purple' style='display:inline-block;'><i class="fa-solid fa-pencil"></i></button>` : "";
+                let displayID = `<span style="color:#9ca3af; font-weight:bold; margin-right:8px;">${item.id.toUpperCase()}</span>`;
+                
+                div.innerHTML = `
+                    <div class="notebook-top-bar">
+                        <div>${trashBtn}${editBtn}${displayID}</div>
+                        <div style='font-weight:bold; padding:4px 12px; border-radius:9999px; font-size:13px; color:#7e22ce; background:#f5f3ff;'>📅 ${item.date}</div>
+                    </div>
+                    <div class="notebook-content-box">${item.content}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            if(localNotebookNotes.length === 0) {
+                container.innerHTML = `<div style="padding:20px; text-align:center; color:#9ca3af; font-size:13px;">નોટબુક ખાલી છે.</div>`;
+            }
+        }
+
+        function renderArtiList() {
+            const container = document.getElementById('arti-list'); container.innerHTML = '';
+            localArtiList.sort((a, b) => (parseInt(a.id.replace('a', '')) || 0) - (parseInt(b.id.replace('a', '')) || 0));
+
+            localArtiList.forEach(item => {
+                const div = document.createElement('div'); div.className = "arti-row-item";
+                
+                let trashBtn = (isAdmin && item.id !== 'a1') ? `<button onclick="deleteGenericItem('arti-list', '${item.id}')" class='btn-trash' style='display:inline-block;'><i class="fa-solid fa-trash-can"></i></button>` : "";
+                let editBtn = isAdmin ? `<button onclick="editArtiInline('${item.id}', '${item.title}', \`${item.lyrics.replace(/`/g, '\\`').replace(/\n/g, '\\n')}\`)" class='btn-edit-inline' style='display:inline-block; color:#ea580c;'><i class="fa-solid fa-pencil"></i></button>` : "";
+                let displayID = `<span style="color:#9ca3af; font-weight:bold; margin-right:8px;">${item.id.toUpperCase()}</span>`;
+                
+                div.innerHTML = `
+                    <div class="arti-top-bar" style="margin-bottom: 5px;">
+                        <div>${trashBtn}${editBtn}${displayID}<span style="font-weight:bold; color:#ea580c; font-size:15px; margin-left:2px;">${item.title}</span></div>
+                    </div>
+                    <div class="arti-lyrics-box">${item.lyrics}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        async function addNewArti() {
+            if (!isAdmin) return;
+            
+            let maxIdNum = 0;
+            localArtiList.forEach(a => {
+                let num = parseInt(a.id.replace('a', '')) || 0;
+                if(num > maxIdNum) maxIdNum = num;
+            });
+            let nextArtiId = `a${maxIdNum + 1}`;
+
+            const customId = prompt("🎵 નવી આરતી/થાળ માટે ID આંકડો લખો (દા.ત: a2):", nextArtiId);
+            if(!customId) return;
+
+            let idStr = customId.toLowerCase().trim();
+            let idNum = parseInt(idStr.replace('a', '')) || 0;
+
+            const title = prompt("📝 આરતી કે થાળનું નામ લખો (દા.ત: ગણપતિજીનો થાળ અથવા આરતી):");
+            const lyrics = prompt("📜 આરતી અથવા થાળનું આખું લખાણ શુદ્ધ ગુજરાતીમાં ટાઈપ કરો:\n(લાઇન બદલવા 'Enter' દબાવો)");
+            if(!title || !lyrics) return;
+
+            let newData = { title: title.trim(), lyrics: lyrics.trim() };
+            let exists = localArtiList.some(a => a.id === idStr);
+
+            if (exists) {
+                document.getElementById('sync-status').innerText = "🔄 આરતી લિસ્ટ શિફ્ટ થઈ રહ્યું છે...";
+                await shiftAndInsert("arti_list", "a", idNum, idStr, newData);
+            } else {
+                db.collection("mandal_years").doc(selectedYear).collection("arti_list").doc(idStr).set(newData);
+            }
+            renderArtiList();
+        }
+
+        function editArtiInline(id, oldTitle, oldLyrics) {
+            if (!isAdmin) return;
+            const newTitle = prompt("📝 આરતી/થાળનું નામ સુધારો:", oldTitle);
+            const newLyrics = prompt("📜 આરતી/થાળનું લખાણ સુધારો:", oldLyrics);
+            if (newTitle && newLyrics) {
+                db.collection("mandal_years").doc(selectedYear).collection("arti_list").doc(id).update({
+                    title: newTitle.trim(), lyrics: newLyrics.trim()
+                }).then(() => { renderArtiList(); });
+            }
+        }
+
+        function editNotebookInline(id, oldContent, oldDate) {
+            if (!isAdmin) return;
+            const newContent = prompt("📝 મંડળની આ નોંધ સુધારો:", oldContent);
+            const newDate = prompt("📅 તારીખ અથવા વાર સુધારો:", oldDate);
+            if (newContent && newDate) {
+                db.collection("mandal_years").doc(selectedYear).collection("notebook_notes").doc(id).update({
+                    content: newContent, date: newDate
+                }).then(() => { renderNotebookList(); });
+            }
+        }
+
+        function editPrasadInline(id, oldName, oldDate) {
+            if (!isAdmin) return;
+            const newName = prompt("યજમાનો અથવા ૧૦ થી ૧૫ સભ્યોના નામ સુધારો:", oldName);
+            const newDate = prompt("તારીખ અથવા સમય સુધારો:", oldDate);
+            if (newName && newDate) {
+                db.collection("mandal_years").doc(selectedYear).collection("prasad_vari").doc(id).update({
+                    name: newName, date: newDate
+                }).then(() => { renderPrasadList(); });
+            }
+        }
+
+        function updateAmountDirectly(elementId, id, oldAmount, prefix) {
+            if (!isAdmin) return;
+            let collectionName = elementId === 'house-list' ? 'house_funds' : 'members';
+            const amt = prompt("નવી રકમ લખો (₹):", oldAmount);
+            if (amt !== null) {
+                let intAmt = parseInt(amt) || 0;
+                if(collectionName === 'members') {
+                    db.collection("mandal_years").doc(selectedYear).collection(collectionName).doc(id).update({
+                        status: intAmt > 0 ? "paid" : "pending", amount: intAmt
+                    });
+                } else {
+                    db.collection("mandal_years").doc(selectedYear).collection(collectionName).doc(id).update({
+                        amount: intAmt
+                    });
+                }
+            }
+        }
+
+        function renderGenericList(elementId, dataList, isHouse = false, isExpense = false) {
+            const container = document.getElementById(elementId); container.innerHTML = '';
+            let countDisplayed = 0;
+
+            if(dataList.length > 0) {
+                dataList.forEach(item => {
+                    let nameDisplay = item.name || item.title || "અજ્ઞાત";
+                    let searchMatch = checkSearchMatch(nameDisplay, item.id, searchQuery);
+
+                    if (isHouse && !searchMatch) return; 
+
+                    countDisplayed++;
+                    const div = document.createElement('div'); div.className = "row-item";
+                    let trashBtn = isAdmin ? `<button onclick="deleteGenericItem('${elementId}', '${item.id}')" class='btn-trash' style='display:inline-block;'><i class="fa-solid fa-trash-can"></i></button>` : "";
+                    
+                    let amtColor = isExpense ? 'color:#dc2626; background:#fee2e2;' : 'color:#16a34a; background:#f0fdf4;';
+                    let displayID = isHouse ? `<span style="color:#9ca3af; font-weight:bold; margin-right:8px;">${item.id.toUpperCase()}</span>` : "";
+                    
+                    let amtBadge = (isAdmin && isHouse) 
+                        ? `<span onclick="updateAmountDirectly('${elementId}', '${item.id}', ${item.amount}, 'h')" style='font-weight:bold; padding:4px 12px; border-radius:9999px; font-size:13px; cursor:pointer; ${amtColor}'>₹${item.amount} ✏️</span>`
+                        : `<span style='font-weight:bold; padding:4px 12px; border-radius:9999px; font-size:13px; ${amtColor}'>₹${item.amount}</span>`;
+                    
+                    div.innerHTML = `<div>${trashBtn}${displayID}<span style="font-weight:500; color:#4b5563;">${nameDisplay}</span></div><div>${amtBadge}</div>`;
+                    container.appendChild(div);
+                });
+            }
+            
+            if(dataList.length === 0 || countDisplayed === 0) {
+                container.innerHTML = `<div style="padding:20px; text-align:center; color:#9ca3af; font-size:13px;">કોઈ માહિતી નથી</div>`;
+            }
+        }
+
+        function handleSmartNameEdit() {
+            if (!isAdmin) return;
+            
+            const rawId = prompt("🔍 સુધારવા માટે સભ્યની ID (m1, m2) અથવા ઘરની ID (h1, h2) લખો:");
+            if (!rawId) return;
+            
+            let cleanId = rawId.toLowerCase().trim();
+
+            if (cleanId.startsWith('m')) {
+                const member = localMembers.find(m => m.id === cleanId);
+                if (member) {
+                    const newName = prompt(`👤 સભ્ય [${cleanId.toUpperCase()}] નું નવું સાચું નામ લખો:`, member.name);
+                    if (newName && newName.trim() !== "") {
+                        db.collection("mandal_years").doc(selectedYear).collection("members").doc(cleanId).update({ name: newName.trim() });
+                    }
+                } else { alert("❌ ભૂલ: આ આઈડીનો કોઈ સભ્ય લિસ્ટમાં નથી!"); }
+                
+            } else if (cleanId.startsWith('h')) {
+                const house = localHouseFunds.find(h => h.id === cleanId);
+                if (house) {
+                    const newName = prompt(`🏡 ઘર [${cleanId.toUpperCase()}] નું નવું સાચું નામ લખો:`, house.name);
+                    if (newName && newName.trim() !== "") {
+                        db.collection("mandal_years").doc(selectedYear).collection("house_funds").doc(cleanId).update({ name: newName.trim() });
+                    }
+                } else { alert("❌ ભૂલ: આ આઈડીનું કોઈ ઘર લિસ્ટમાં નથી!"); }
+            } else {
+                alert("⚠ ખોટી આઈડી! કૃપા કરીને સભ્ય માટે m અને ઘર માટે h થી શરૂ થતી આઈડી લખો (જેમ કે m1 અથવા h1).");
+            }
+        }
+
+        function markAsPaid(id, defaultAmount) {
+            if (!isAdmin) return;
+            const amt = prompt("ચંદાની રકમ લખો:", defaultAmount || "500");
+            if (amt !== null) db.collection("mandal_years").doc(selectedYear).collection("members").doc(id).update({ status: parseInt(amt) > 0 ? "paid" : "pending", amount: parseInt(amt) || 0 });
+        }
+
+        async function shiftAndInsert(collectionName, prefix, targetIdNum, targetIdStr, newData) {
+            let colRef = db.collection("mandal_years").doc(selectedYear).collection(collectionName);
+            let snap = await colRef.get();
+            let batch = db.batch();
+            let itemsToShift = [];
+
+            snap.forEach(doc => {
+                let idNum = parseInt(doc.id.replace(prefix, '')) || 0;
+                if (idNum >= targetIdNum) {
+                    itemsToShift.push({ idNum: idNum, oldId: doc.id, data: doc.data() });
+                }
+            });
+
+            itemsToShift.sort((a, b) => b.idNum - a.idNum);
+            
+            for (let item of itemsToShift) {
+                let newIdStr = prefix + (item.idNum + 1);
+                batch.set(colRef.doc(newIdStr), item.data);
+                batch.delete(colRef.doc(item.oldId));
+            }
+
+            batch.set(colRef.doc(targetIdStr), newData);
+            await batch.commit();
+        }
+
+        async function addPrasadVari() {
+            if (!isAdmin) return;
+            
+            let maxIdNum = 0;
+            localPrasadVari.forEach(p => {
+                let num = parseInt(p.id.replace('p', '')) || 0;
+                if(num > maxIdNum) maxIdNum = num;
+            });
+            let nextPrasadId = `p${maxIdNum + 1}`;
+
+            const customId = prompt("પ્રસાદ વારી માટે આઈડી લખો (દા.ત: p1):", nextPrasadId);
+            if(!customId) return;
+
+            let idStr = customId.toLowerCase().trim();
+            let idNum = parseInt(idStr.replace('p', '')) || 0;
+
+            const name = prompt("યજમાનો અથવા ૧૦ થી ૧૫ સભ્યોના નામ અલ્પવિરામ (,) અથવા લાઇનસર લખો:");
+            const dateStr = prompt("તારીખ અથવા સમય લખો:");
+            if(!name || !dateStr) return;
+
+            let newData = { name: name, date: dateStr };
+            let exists = localPrasadVari.some(p => p.id === idStr);
+
+            if (exists) {
+                document.getElementById('sync-status').innerText = "🔄 પ્રસાદ યાદી શિફ્ટ થઈ રહી છે...";
+                await shiftAndInsert("prasad_vari", "p", idNum, idStr, newData);
+                alert("✅ પ્રસાદનું લિસ્ટ શિફ્ટ કરીને નવું નામ વચ્ચે ગોઠવી દીધું!");
+            } else {
+                db.collection("mandal_years").doc(selectedYear).collection("prasad_vari").doc(idStr).set(newData);
+            }
+            renderPrasadList();
+        }
+
+        async function addNotebookNote() {
+            if (!isAdmin) return;
+            
+            let maxIdNum = 0;
+            localNotebookNotes.forEach(n => {
+                let num = parseInt(n.id.replace('n', '')) || 0;
+                if(num > maxIdNum) maxIdNum = num;
+            });
+            let nextNoteId = `n${maxIdNum + 1}`;
+
+            const customId = prompt("નોંધ માટે નવો ID આંકડો (દા.ત: n1):", nextNoteId);
+            if(!customId) return;
+
+            let idStr = customId.toLowerCase().trim();
+            let idNum = parseInt(idStr.replace('n', '')) || 0;
+
+            const content = prompt("📝 મંડળની જે કંઈ પણ ખાસ નોંધ અથવા વિગત લખવી હોય તે અહીં ટાઈપ કરો:");
+            const dateStr = prompt("📅 તારીખ અથવા વાર લખો (દા.ત: ૧૭-જુલાઈ અથવા રવિવાર):", new Date().toLocaleDateString('gu-IN'));
+            if(!content || !dateStr) return;
+
+            let newData = { content: content, date: dateStr };
+            let exists = localNotebookNotes.some(n => n.id === idStr);
+
+            if (exists) {
+                document.getElementById('sync-status').innerText = "🔄 નોટબુક શિફ્ટ થઈ રહી છે...";
+                await shiftAndInsert("notebook_notes", "n", idNum, idStr, newData);
+            } else {
+                db.collection("mandal_years").doc(selectedYear).collection("notebook_notes").doc(idStr).set(newData);
+            }
+            renderNotebookList();
+        }
+
+        async function addHouseFund() {
+            if (!isAdmin) return;
+            
+            let maxIdNum = 0;
+            localHouseFunds.forEach(h => {
+                let num = parseInt(h.id.replace('h', '')) || 0;
+                if(num > maxIdNum) maxIdNum = num;
+            });
+            let nextHouseId = `h${maxIdNum + 1}`;
+
+            const customId = prompt("નવા ઘરની ID લખો (દા.ત: h5):", nextHouseId);
+            if(!customId) return;
+            
+            let idStr = customId.toLowerCase().trim();
+            let idNum = parseInt(idStr.replace('h', '')) || 0;
+            
+            const name = prompt("ઘરનું નામ અથવા વિગત લખો:"); 
+            const amt = prompt("ફાળાની રકમ (₹):");
+            if (!name || !amt || isNaN(amt)) return;
+
+            let newData = { name: name, amount: parseInt(amt) };
+            let exists = localHouseFunds.some(h => h.id === idStr);
+
+            if (exists) {
+                document.getElementById('sync-status').innerText = "🔄 લિસ્ટ શિફ્ટ થઈ રહ્યું છે...";
+                await shiftAndInsert("house_funds", "h", idNum, idStr, newData);
+                alert("✅ લિસ્ટ શિફ્ટ કરીને નવું ઘર વચ્ચે ઉમેરી દીધું છે!");
+            } else {
+                db.collection("mandal_years").doc(selectedYear).collection("house_funds").doc(idStr).set(newData);
+            }
+        }
+
+        function addDonor() {
+            if (!isAdmin) return;
+            const name = prompt("દાન દાતાનું નામ લખો:"); const amt = prompt("દાનની રકમ (₹):");
+            if (name && amt && !isNaN(amt)) db.collection("mandal_years").doc(selectedYear).collection("donors").add({ name: name, amount: parseInt(amt) });
+        }
+
+        function addExpense() {
+            if (!isAdmin) return;
+            const title = prompt("ખર્ચની વિગત:"); const amt = prompt("ખર્ચની રકમ (₹):");
+            if (title && amt && !isNaN(amt)) db.collection("mandal_years").doc(selectedYear).collection("expenses").add({ title: title, amount: parseInt(amt) });
+        }
+
+        function deleteGenericItem(elementId, docId) {
+            if (!isAdmin) return;
+            let collectionName = elementId === 'house-list' ? 'house_funds' : (elementId === 'donors-list' ? 'donors' : (elementId === 'members-list' ? 'members' : (elementId === 'prasad-list' ? 'prasad_vari' : (elementId === 'notebook-list' ? 'notebook_notes' : (elementId === 'arti-list' ? 'arti_list' : 'expenses')))));
+            if (confirm("શું તમે આ કાઢી નાખવા માંગો છો?")) db.collection("mandal_years").doc(selectedYear).collection(collectionName).doc(docId).delete();
+            if(elementId === 'prasad-list') renderPrasadList();
+            if(elementId === 'notebook-list') renderNotebookList();
+            if(elementId === 'arti-list') renderArtiList();
+        }
+
+        async function addNewMember() {
+            if (!isAdmin) return;
+            
+            let maxIdNum = 0;
+            localMembers.forEach(m => {
+                let num = parseInt(m.id.replace('m', '')) || 0;
+                if(num > maxIdNum) maxIdNum = num;
+            });
+            let nextId = `m${maxIdNum + 1}`;
+
+            const customId = prompt("નવા સભ્યની ID લખો (દા.ત: m5):", nextId);
+            if(!customId) return;
+            
+            let idStr = customId.toLowerCase().trim();
+            let idNum = parseInt(idStr.replace('m', '')) || 0;
+            
+            const name = prompt("નવા સભ્યનું નામ લખો:");
+            if (!name) return;
+
+            let newData = { name: name, status: "pending", amount: 0 };
+            let exists = localMembers.some(m => m.id === idStr);
+
+            if (exists) {
+                document.getElementById('sync-status').innerText = "🔄 સભ્યોનું લિસ્ટ શિફ્ટ થઈ રહ્યું છે...";
+                await shiftAndInsert("members", "m", idNum, idStr, newData);
+                alert("✅ વચ્ચે નામ એડ થઈ ગયું અને નીચેના સભ્યો એક ક્રમ નીચે શિફ્ટ થઈ ગયા!");
+            } else {
+                db.collection("mandal_years").doc(selectedYear).collection("members").doc(idStr).set(newData);
+            }
+        }
+
+        document.getElementById('year-input').addEventListener('input', (e) => {
+            let val = e.target.value.trim();
+            if(val.length === 4 && !isNaN(val)) { 
+                selectedYear = val; 
+                if(isAdmin) {
+                    ['add-exp-btn', 'add-don-btn', 'add-house-btn'].forEach(id => document.getElementById(id).style.display = "block");
+                    document.getElementById('add-prasad-btn-modal').style.display = "block";
+                    document.getElementById('add-note-btn-modal').style.display = "block";
+                    document.getElementById('add-arti-btn-modal').style.display = "block";
+                }
+                startLiveSync(); 
+            }
+        });
+
+        startLiveSync();
+        document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; refreshUI(); if(document.getElementById('prasad-modal').style.display === 'flex') renderPrasadList(); if(document.getElementById('notebook-modal').style.display === 'flex') renderNotebookList(); if(document.getElementById('arti-modal').style.display === 'flex') renderArtiList(); });
+    </script>
+</body>
+</html>
